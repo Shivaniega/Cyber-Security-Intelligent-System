@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Security Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c0e2a 0%, #1a1f4b 100%);
+            color: #e0e0ff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .cyber-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .cyber-line {
+            position: absolute;
+            background: rgba(0, 247, 255, 0.1);
+            animation: lineMove 10s linear infinite;
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00f7ff, transparent);
+            animation: scan 3s linear infinite;
+            z-index: 3;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            position: relative;
+            padding: 0 20px;
+        }
+        
+        .animation-panel {
+            width: 30%;
+            height: 500px;
+            position: relative;
+            perspective: 800px;
+        }
+        
+        .login-panel {
+            width: 35%;
+            min-width: 380px;
+            z-index: 10;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            font-size: 2.8rem;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00f7ff, #a200ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #a0a0e0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .login-box {
+            background: rgba(13, 18, 45, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 247, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            box-shadow: 0 0 40px rgba(0, 247, 255, 0.1);
+            animation: slideUp 1s ease-out;
+            position: relative;
+            overflow: hidden;
+            z-index: 5;
+        }
+        
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            z-index: -1;
+            background: linear-gradient(45deg, #00f7ff, #a200ff, #00f7ff);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            border-radius: 16px;
+        }
+        
+        .login-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(13, 18, 45, 0.9);
+            border-radius: 14px;
+            z-index: -1;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #a0a0e0;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(10, 15, 35, 0.7);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            border-radius: 8px;
+            color: #e0e0ff;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #00f7ff;
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.2);
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 38px;
+            color: #00f7ff;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #00f7ff, #a200ff);
+            border: none;
+            border-radius: 8px;
+            color: #0c0e2a;
+            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .additional-options {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .additional-options a {
+            color: #00f7ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .additional-options a:hover {
+            color: #a200ff;
+            text-decoration: underline;
+        }
+        
+        .security-indicator {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #a0a0e0;
+        }
+        
+        .indicator-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(0, 247, 255, 0.3);
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        /* 3D Shapes */
+        .pyramid {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            transform-style: preserve-3d;
+            animation: rotatePyramid 20s infinite linear;
+            top: 20%;
+            left: 40%;
+        }
+        
+        .side {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 75px solid transparent;
+            border-right: 75px solid transparent;
+            border-bottom: 130px solid rgba(0, 247, 255, 0.2);
+            transform-origin: bottom center;
+        }
+        
+        .side:nth-child(1) { transform: rotateY(0deg) translateZ(43px); border-bottom-color: rgba(0, 247, 255, 0.15); }
+        .side:nth-child(2) { transform: rotateY(90deg) translateZ(43px); border-bottom-color: rgba(162, 0, 255, 0.15); }
+        .side:nth-child(3) { transform: rotateY(180deg) translateZ(43px); border-bottom-color: rgba(0, 247, 255, 0.15); }
+        .side:nth-child(4) { transform: rotateY(270deg) translateZ(43px); border-bottom-color: rgba(162, 0, 255, 0.15); }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .shape {
+            position: absolute;
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            background: rgba(0, 247, 255, 0.05);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .shape1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 20%;
+            animation-delay: 0s;
+            border-radius: 50%;
+        }
+        
+        .shape2 {
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            left: 30%;
+            animation-delay: -2s;
+            transform: rotate(45deg);
+        }
+        
+        .shape3 {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 10%;
+            animation-delay: -4s;
+            border-radius: 20px;
+        }
+        
+        .shape4 {
+            width: 120px;
+            height: 120px;
+            top: 20%;
+            right: 20%;
+            animation-delay: -1s;
+            border-radius: 50%;
+        }
+        
+        .shape5 {
+            width: 90px;
+            height: 90px;
+            top: 65%;
+            right: 25%;
+            animation-delay: -3s;
+            transform: rotate(45deg);
+        }
+        
+        .shape6 {
+            width: 70px;
+            height: 70px;
+            top: 45%;
+            right: 10%;
+            animation-delay: -5s;
+            border-radius: 15px;
+        }
+        
+        .binary-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .binary-digit {
+            position: absolute;
+            color: rgba(0, 247, 255, 0.5);
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            animation: binaryFall 10s linear infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); background: #00f7ff; }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        
+        @keyframes lineMove {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        @keyframes rotatePyramid {
+            0% { transform: rotateY(0deg) rotateX(15deg); }
+            100% { transform: rotateY(360deg) rotateX(15deg); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes binaryFall {
+            0% { transform: translateY(-100px); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .animation-panel {
+                display: none;
+            }
+            
+            .login-panel {
+                width: 90%;
+                max-width: 500px;
+                margin: 40px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" action="log.php">
+    <div class="cyber-lines" id="cyber-lines"></div>
+    <div class="scan-line"></div>
+    <div class="binary-rain" id="binary-rain"></div>
+    
+    <div class="container">
+        <!-- Left Animation Panel -->
+        <div class="animation-panel left-panel">
+            <div class="pyramid">
+                <div class="side"></div>
+                <div class="side"></div>
+                <div class="side"></div>
+                <div class="side"></div>
+            </div>
+            
+            <div class="floating-shapes">
+                <div class="shape shape1"></div>
+                <div class="shape shape2"></div>
+                <div class="shape shape3"></div>
+            </div>
+        </div>
+        
+        <!-- Login Panel -->
+        <div class="login-panel">
+            <div class="header">
+                <h1>CYBER SECURITY INTELLIGENCE</h1>
+                <p>Secure access to threat intelligence and monitoring systems</p>
+            </div>
+            
+            <div class="login-box">
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="email">EMAIL ADDRESS</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="password">PASSWORD</label>
+                        <input type="password" id="password" name="pwd" placeholder="Enter your password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">LOGIN</button>
+                    
+                    <div class="additional-options">
+                        <a href="#">Forgot Password?</a>
+                    </div>
+                     <div class="additional-options">
+                        <a href="reg.html">sign in?</a>
+                    </div>
+                </form>
+                
+                <div class="security-indicator">
+                    <p>SYSTEM SECURITY: ACTIVE</p>
+                    <div class="indicator-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Animation Panel -->
+        <div class="animation-panel right-panel">
+            <div class="floating-shapes">
+                <div class="shape shape4"></div>
+                <div class="shape shape5"></div>
+                <div class="shape shape6"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create cyber lines
+        document.addEventListener('DOMContentLoaded', function() {
+            const cyberLines = document.getElementById('cyber-lines');
+            for (let i = 0; i < 20; i++) {
+                const line = document.createElement('div');
+                line.className = 'cyber-line';
+                line.style.left = Math.random() * 100 + 'vw';
+                line.style.width = Math.random() * 2 + 'px';
+                line.style.height = Math.random() * 100 + 50 + 'px';
+                line.style.animationDelay = Math.random() * 10 + 's';
+                line.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                cyberLines.appendChild(line);
+            }
+            
+            // Create binary rain
+            const binaryRain = document.getElementById('binary-rain');
+            function createBinaryDigit() {
+                const digit = document.createElement('div');
+                digit.className = 'binary-digit';
+                digit.textContent = Math.random() > 0.5 ? '1' : '0';
+                digit.style.left = Math.random() * 100 + 'vw';
+                digit.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                digit.style.animationDelay = Math.random() * 5 + 's';
+                binaryRain.appendChild(digit);
+                
+                // Remove digit after animation completes
+                setTimeout(() => {
+                    digit.remove();
+                }, 10000);
+            }
+            
+            // Create initial digits
+            for (let i = 0; i < 30; i++) {
+                createBinaryDigit();
+            }
+            
+            // Continue creating digits
+            setInterval(createBinaryDigit, 300);
+            
+            // Form submission
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const btn = this.querySelector('.btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'LOGGING IN...';
+                
+                // Simulate authentication process
+                setTimeout(() => {
+                    btn.textContent = 'ACCESS GRANTED';
+                    btn.style.background = 'linear-gradient(90deg, #00ff7b, #00f7ff)';
+                    
+                    setTimeout(() => {
+                        btn.textContent = 'REDIRECTING...';
+                        // In a real application, this would redirect to the dashboard
+                    }, 1000);
+                }, 2000);
+            });
+        });
+    </script>
+    </form>
+</body>
+</html> 

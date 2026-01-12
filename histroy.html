@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spam Shield - History</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .history-container {
+      background-color: #1a1a1a;
+      padding: 40px;
+      border-radius: 12px;
+      max-width: 900px;
+      margin: 50px auto;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    }
+
+    .history-container h2 {
+      text-align: center;
+      color: #0ff;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      color: #fff;
+    }
+
+    table th, table td {
+      border: 1px solid #0ff;
+      padding: 12px;
+      text-align: center;
+    }
+
+    table th {
+      background-color: #111;
+      color: #0ff;
+    }
+
+    .back-btn, .clear-btn {
+      margin-top: 30px;
+      display: inline-block;
+      padding: 10px 20px;
+      color: #0ff;
+      background: none;
+      border: 2px solid #0ff;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .back-btn:hover, .clear-btn:hover {
+      background-color: #0ff;
+      color: #000;
+    }
+
+    .btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .btns {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="history-container">
+    <h2>📜 Spam Detection History</h2>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Input</th>
+          <th>Score</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- History will be loaded here -->
+      </tbody>
+    </table>
+
+    <div class="btns">
+      <a href="main.html" class="back-btn">← Back</a>
+      <button class="clear-btn" onclick="clearHistory()">🗑️ Clear History</button>
+    </div>
+  </div>
+
+  <script>
+    // Load history from localStorage
+    const history = JSON.parse(localStorage.getItem('spamShieldHistory')) || [];
+
+    const tbody = document.querySelector('#historyTable tbody');
+
+    if (history.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4">No history found.</td></tr>`;
+    } else {
+      history.reverse().forEach(entry => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.timestamp}</td>
+          <td>${entry.input}</td>
+          <td>${entry.score}</td>
+          <td>${entry.result}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function clearHistory() {
+      if (confirm("Are you sure you want to clear all history?")) {
+        localStorage.removeItem('spamShieldHistory');
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

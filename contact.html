@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Cyber Security Intelligence</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #0a192f; --secondary: #112240; --accent: #64ffda; --text-primary: #e6f1ff; --text-secondary: #8892b0; --danger: #ff6b6b; --warning: #ffd166; --success: #06d6a0; --card-bg: rgba(17, 34, 64, 0.8); } * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } body { background-color: var(--primary); color: var(--text-primary); line-height: 1.6; background-image: radial-gradient(circle at 10% 20%, rgba(100, 255, 218, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(6, 214, 160, 0.1) 0%, transparent 20%); } .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; } /* Header Styles */ header { background-color: var(--secondary); padding: 15px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); } .header-content { display: flex; justify-content: space-between; align-items: center; } .logo { display: flex; align-items: center; gap: 10px; } .logo h1 { font-size: 1.8rem; background: linear-gradient(90deg, var(--accent), var(--success)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .logo i { color: var(--accent); font-size: 1.8rem; } nav ul { display: flex; list-style: none; gap: 25px; } nav a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s; position: relative; } nav a:hover { color: var(--accent); } nav a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background-color: var(--accent); transition: width 0.3s; } nav a:hover::after { width: 100%; } /* Hero Section */ .contact-hero { padding: 80px 0 50px; text-align: center; } .contact-hero h2 { font-size: 2.8rem; margin-bottom: 20px; background: linear-gradient(90deg, var(--accent), var(--success)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; } .contact-hero p { font-size: 1.2rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 40px; } /* Contact Section */ .contact-section { padding: 40px 0 80px; } .contact-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 30px; } @media (max-width: 900px) { .contact-container { grid-template-columns: 1fr; } } .contact-info { background-color: var(--card-bg); border-radius: 10px; padding: 40px; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2); height: fit-content; } .contact-info h3 { font-size: 1.5rem; margin-bottom: 30px; color: var(--accent); } .info-item { display: flex; align-items: flex-start; margin-bottom: 25px; } .info-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; background-color: rgba(100, 255, 218, 0.1); color: var(--accent); font-size: 1.2rem; flex-shrink: 0; } .info-content h4 { font-size: 1.1rem; margin-bottom: 5px; } .info-content p { color: var(--text-secondary); } .info-content a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s; } .info-content a:hover { color: var(--accent); } .social-links { display: flex; gap: 15px; margin-top: 30px; } .social-links a { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background-color: rgba(100, 255, 218, 0.1); color: var(--accent); transition: all 0.3s; } .social-links a:hover { background-color: var(--accent); color: var(--primary); transform: translateY(-3px); } /* Global Offices Section */ .global-offices { padding: 60px 0; margin-top: 40px; } .global-offices h3 { text-align: center; font-size: 1.8rem; margin-bottom: 40px; color: var(--accent); } .office-table-container { overflow-x: auto; background-color: var(--card-bg); border-radius: 10px; padding: 20px; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2); } .office-table { width: 100%; border-collapse: collapse; min-width: 800px; } .office-table th { background-color: rgba(100, 255, 218, 0.1); color: var(--accent); text-align: left; padding: 15px; font-weight: 600; } .office-table td { padding: 15px; border-bottom: 1px solid rgba(136, 146, 176, 0.2); color: var(--text-secondary); } .office-table tr:last-child td { border-bottom: none; } .office-table tr:hover { background-color: rgba(100, 255, 218, 0.05); } /* Footer */ footer { background-color: var(--secondary); padding: 60px 0 30px; margin-top: 60px; } .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; } .footer-column h3 { font-size: 1.3rem; margin-bottom: 20px; color: var(--accent); } .footer-column ul { list-style: none; } .footer-column ul li { margin-bottom: 10px; } .footer-column a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s; } .footer-column a:hover { color: var(--accent); } .copyright { text-align: center; padding-top: 30px; border-top: 1px solid rgba(136, 146, 176, 0.2); color: var(--text-secondary); font-size: 0.9rem; } /* Responsive Design */ @media (max-width: 768px) { .header-content { flex-direction: column; gap: 20px; } nav ul { gap: 15px; flex-wrap: wrap; justify-content: center; } .contact-hero h2 { font-size: 2.2rem; } .contact-hero p { font-size: 1rem; } .contact-info, .contact-form { padding: 25px; } }
+        /* [Same styles as before - unchanged] */
+        /* ... (Keep all your styles as they are) ... */
+        /* Entire style section unchanged, so not repeated for brevity */
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>Cyber Security</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="main.html">Home</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <h2>Cyber Contact</h2>
+            <p>Reach out to our cybersecurity experts through our encrypted communication channels. We're here to help protect your digital assets.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-container">
+                <!-- Contact Information -->
+                <div class="contact-info">
+                    <h3>Get in Touch</h3>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Headquarters</h4>
+                            <p>123 Security Plaza<br>Cyber District, NY 10001</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Emergency Hotline</h4>
+                            <p>+1 (555) 123-4567</p>
+                            <p>Available 24/7 for critical incidents</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Email Us</h4>
+                            <p><a href="mailto:security@cybersentry.com">security@cybersentry.com</a></p>
+                            <p>For general inquiries and support</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Operating Hours</h4>
+                            <p>Monday-Friday: 8:00 AM - 8:00 PM EST<br>
+                               Saturday: 9:00 AM - 5:00 PM EST<br>
+                               Emergency support available 24/7</p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Global Offices Section -->
+                <div class="contact-info">
+                    <h3>Global POC Stations & Cyber Offices</h3>
+                    <p>Our global network of Points of Contact (POC) and cyber offices ensures timely support and incident response worldwide.</p>
+                    
+                    <div class="office-table-container">
+                        <table class="office-table">
+                            <thead>
+                                <tr>
+                                    <th>Country</th>
+                                    <th>City</th>
+                                    <th>POC Handle</th>
+                                    <th>Contact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>United States</td>
+                                    <td>Washington, DC</td>
+                                    <td>CISA-US-POC</td>
+                                    <td>+1 888-282-0870</td>
+                                </tr>
+                                <tr>
+                                    <td>United Kingdom</td>
+                                    <td>London</td>
+                                    <td>UK-CYBER-POC</td>
+                                    <td>+44 203 322 3031</td>
+                                </tr>
+                                <tr>
+                                    <td>Canada</td>
+                                    <td>Toronto</td>
+                                    <td>CA-CYBER-POC</td>
+                                    <td>+1 866 598 6170</td>
+                                </tr>
+                                <tr>
+                                    <td>Germany</td>
+                                    <td>Düsseldorf</td>
+                                    <td>DE-CYBER-POC</td>
+                                    <td>+49 163 6288041</td>
+                                </tr>
+                                <tr>
+                                    <td>France</td>
+                                    <td>Paris</td>
+                                    <td>FR-CYBER-POC</td>
+                                    <td>+33 1 70 61 32 76</td>
+                                </tr>
+                                <tr>
+                                    <td>Australia</td>
+                                    <td>Sydney</td>
+                                    <td>AU-CYBER-POC</td>
+                                    <td>+61 2 9876 5432</td>
+                                </tr>
+                                <tr>
+                                    <td>India</td>
+                                    <td>Hyderabad</td>
+                                    <td>IN-CYBER-POC</td>
+                                    <td>+91 40 6789 1234</td>
+                                </tr>
+                                <tr>
+                                    <td>Spain</td>
+                                    <td>Madrid</td>
+                                    <td>ES-CYBER-POC</td>
+                                    <td>+34 91 123 4567</td>
+                                </tr>
+                                <tr>
+                                    <td>Italy</td>
+                                    <td>Rome</td>
+                                    <td>IT-CYBER-POC</td>
+                                    <td>+39 06 1234 5678</td>
+                                </tr>
+                                <tr>
+                                    <td>Japan</td>
+                                    <td>Tokyo</td>
+                                    <td>JP-CYBER-POC</td>
+                                    <td>+81 3 1234 5678</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Cyber Security</h3>
+                    <p style="color: var(--text-secondary);">Protecting your digital assets with cutting-edge security solutions and intelligence.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="main.html">Home</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Disclaimer</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Cyber Security Intelligence. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spam Shield - Intelligent Spam Detection</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0c0c14 0%, #1a1a2e 100%);
+      color: #e6e6e6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(30, 30, 46, 0.6);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    
+    .container:hover::before {
+      transform: scaleX(1);
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(0, 255, 200, 0.3);
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .logo-icon {
+      font-size: 2.5rem;
+      color: #00ffc8;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .logo-text {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+      position: relative;
+    }
+    
+    .logo-text::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.5s ease;
+    }
+    
+    .logo:hover .logo-text::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    
+    .tagline {
+      font-weight: 300;
+      opacity: 0.9;
+      color: #b8b8cc;
+      margin-top: 5px;
+    }
+    
+    .content {
+      padding: 20px 0;
+    }
+    
+    .input-section {
+      margin-bottom: 25px;
+      background: rgba(20, 20, 35, 0.7);
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 255, 200, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .input-section:hover {
+      border-color: rgba(0, 255, 200, 0.5);
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.2);
+    }
+    
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 15px;
+      font-size: 16px;
+      border: 2px solid rgba(0, 255, 200, 0.3);
+      border-radius: 10px;
+      resize: none;
+      transition: border-color 0.3s;
+      font-family: inherit;
+      background: rgba(10, 10, 20, 0.8);
+      color: #e6e6e6;
+      margin-top: 15px;
+    }
+    
+    textarea:focus {
+      border-color: #00ffc8;
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .check-btn {
+      background: linear-gradient(to right, #00ffc8, #00b3ff);
+      color: #0c0c14;
+    }
+    
+    .check-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 255, 200, 0.4);
+    }
+    
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #b8b8cc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #e6e6e6;
+    }
+    
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      display: none;
+      border: 1px solid;
+    }
+    
+    .spam { 
+      background-color: rgba(211, 47, 47, 0.1);
+      color: #ff4d4d;
+      border-color: rgba(255, 77, 77, 0.3);
+      display: block;
+    }
+    
+    .legit { 
+      background-color: rgba(56, 142, 60, 0.1);
+      color: #00ffc8;
+      border-color: rgba(0, 255, 200, 0.3);
+      display: block;
+    }
+    
+    .analysis-section {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(20, 20, 35, 0.7);
+      border: 1px solid rgba(0, 255, 200, 0.2);
+      display: none;
+    }
+    
+    .analysis-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #00b3ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .analysis-details {
+      margin-top: 15px;
+    }
+    
+    .analysis-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .spam-word {
+      color: #ff4d4d;
+      font-weight: 500;
+    }
+    
+    .pattern-match {
+      color: #ffa500;
+      font-weight: 500;
+    }
+    
+    .score-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 15px 0;
+      gap: 10px;
+    }
+    
+    .score-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      background: #00b3ff;
+      color: #0c0c14;
+    }
+    
+    .safe {
+      background: #00ffc8;
+    }
+    
+    .warning {
+      background: #ffa500;
+    }
+    
+    .danger {
+      background: #ff4d4d;
+    }
+    
+    .user-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(20, 20, 35, 0.7);
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 200, 0.2);
+    }
+    
+    .user-stats {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00ffc8;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: #b8b8cc;
+    }
+    
+    .login-section {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(20, 20, 35, 0.7);
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid rgba(0, 255, 200, 0.2);
+    }
+    
+    h2 {
+      color: #00ffc8;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    h3 {
+      color: #00b3ff;
+      margin: 25px 0 15px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #b8b8cc;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid rgba(0, 255, 200, 0.3);
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      background: rgba(10, 10, 20, 0.8);
+      color: #e6e6e6;
+    }
+    
+    input:focus, select:focus {
+      border-color: #00ffc8;
+      outline: none;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(to right, #ff4d4d, #ffa500);
+      color: #0c0c14;
+      margin-top: 10px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 77, 108, 0.4);
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+      text-align: center;
+    }
+    
+    .stat-box {
+      background: rgba(20, 20, 35, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+      width: 30%;
+      border: 1px solid rgba(0, 255, 200, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 255, 200, 0.2);
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #00ffc8;
+      margin: 10px 0;
+    }
+    
+    footer {
+      text-align: center;
+      color: #b8b8cc;
+      margin-top: 30px;
+      padding: 20px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .pattern-info {
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(255, 165, 0, 0.1);
+      border-radius: 8px;
+      font-size: 14px;
+      border-left: 3px solid #ffa500;
+    }
+    
+    .pattern-type {
+      font-weight: bold;
+      color: #ffa500;
+    }
+    
+    .cyber-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+    
+    .cyber-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 255, 200, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 200, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      perspective: 1000px;
+    }
+    
+    .floating-element {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(0, 255, 200, 0.5);
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.5);
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100vw) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    .cyber-line {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 1px;
+      background: rgba(0, 255, 200, 0.3);
+      width: 100%;
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: cyberLine 8s infinite;
+    }
+    
+    @keyframes cyberLine {
+      0% {
+        transform: scaleX(0);
+        opacity: 0;
+      }
+      50% {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scaleX(0);
+        opacity: 0;
+      }
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff);
+      color: #0c0c14;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+      font-weight: bold;
+      transform: translateX(100px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    
+    /* Spam Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: 15px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(0, 255, 200, 0.3);
+      position: relative;
+      animation: modalSlideIn 0.3s ease-out;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(0, 255, 200, 0.3);
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      color: #ff4d4d;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #b8b8cc;
+      cursor: pointer;
+      padding: 5px;
+      transition: all 0.3s;
+    }
+    
+    .close-modal:hover {
+      color: #ff4d4d;
+      transform: scale(1.1);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+    
+    .modal-btn {
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .complaint-btn {
+      background: linear-gradient(to right, #ff4d4d, #ffa500);
+      color: #0c0c14;
+    }
+    
+    .complaint-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 77, 108, 0.4);
+    }
+    
+    .back-btn-modal {
+      background: rgba(255, 255, 255, 0.1);
+      color: #b8b8cc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .back-btn-modal:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #e6e6e6;
+    }
+    
+    @media (max-width: 768px) {
+      .buttons {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+      }
+      
+      .stats {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .stat-box {
+        width: 100%;
+      }
+      
+      .user-info {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .user-stats {
+        justify-content: center;
+      }
+      
+      .modal-buttons {
+        flex-direction: column;
+      }
+    }
+    
+    .menu-wrapper {
+      position: relative;
+      margin-left: auto;
+    }
+
+    .menu-toggle {
+      font-size: 1.6rem;
+      color: #00ffc8;
+      cursor: pointer;
+      padding: 10px 12px;
+      border: 2.5px solid #00ffc8;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: transparent;
+    }
+
+    .menu-toggle:hover,
+    .menu-toggle:focus {
+      background: #00ffc8;
+      color: #0c0c14;
+      box-shadow: 0 0 12px #00ffc8;
+      outline: none;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      background: #1a1a2e;
+      border: 1.5px solid rgba(0, 255, 200, 0.5);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 255, 200, 0.5);
+      display: none;
+      flex-direction: column;
+      min-width: 180px;
+      z-index: 999;
+      backdrop-filter: blur(10px);
+      padding: 8px 0;
+      user-select: none;
+      animation: dropdownFade 0.25s ease forwards;
+    }
+
+    @keyframes dropdownFade {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    .dropdown-menu a {
+      color: #00ffc8;
+      padding: 12px 20px;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 8px;
+    }
+
+    .dropdown-menu a:hover {
+      background: rgba(0, 255, 200, 0.15);
+      color: #00b3ff;
+      box-shadow: 0 0 12px rgba(0, 255, 200, 0.5);
+    }
+
+    .dropdown-menu a.logout-link {
+      color: #ff4d4d;
+    }
+
+    .dropdown-menu a.logout-link:hover {
+      color: #ff1a1a;
+      background: rgba(255, 77, 77, 0.15);
+      box-shadow: 0 0 12px rgba(255, 77, 77, 0.5);
+    }
+    
+    .hero-title {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff, #00ffc8);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientText 3s linear infinite;
+    }
+    
+    @keyframes gradientText {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: #b8b8cc;
+      max-width: 700px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cyber Background Elements -->
+  <div class="cyber-background">
+    <div class="cyber-grid"></div>
+    <div class="cyber-line"></div>
+    <div class="floating-element" style="top: 10%; left: 20%;"></div>
+    <div class="floating-element" style="top: 30%; left: 70%;"></div>
+    <div class="floating-element" style="top: 60%; left: 40%;"></div>
+    <div class="floating-element" style="top: 80%; left: 10%;"></div>
+  </div>
+
+  <!-- Spam Detection Modal -->
+  <div id="spamModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title"><span style="font-size: 1.5em;">⚠️</span> Spam Detected!</h2>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <p>This message has been identified as potential spam. You can help us improve our detection by reporting it.</p>
+      <div class="modal-buttons">
+        <button class="modal-btn complaint-btn" onclick="goToComplaintPage()">
+          <span style="font-size: 1.2em;">📝</span> File Complaint
+        </button>
+        <button class="modal-btn back-btn-modal" onclick="goBackToCheck()">
+          <span style="font-size: 1.2em;">←</span> Back to Check
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="logo">
+        <span class="logo-icon">🛡</span>
+        <div>
+          <div class="logo-text">Spam Shield</div>
+          <div class="tagline">AI-powered spam detection for your safety</div>
+        </div>
+      </div>
+      
+      <div class="menu-wrapper">
+        <div class="menu-toggle" onclick="toggleDropdown()">☰</div>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="main.html"><span>🏠</span> Dashboard</a>
+       
+        </div>
+      </div>
+    </header>
+    
+    <div class="content">
+      <div class="hero-section">
+        <h2 class="hero-title">Spam Detection System</h2>
+        <p class="hero-subtitle">Protect yourself from malicious content with our advanced AI-powered spam detection technology</p>
+      </div>
+      
+
+      <div class="user-info">
+        <div class="user-stats">
+          <div class="stat">
+            <div class="stat-value" id="userChecks">0</div>
+            <div class="stat-label">Your Checks</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" id="userSpamCount">0</div>
+            <div class="stat-label">Spam Detected</div>
+          </div>
+        </div>
+        <button type="button" class="check-btn" onclick="resetUserStats()">
+          <span style="font-size: 1.2em;">🔄</span> Reset Count
+        </button>
+      </div>
+      
+      <div class="input-section">
+        <h2>Check Your Message</h2>
+        <p>Paste the message you want to check for spam content</p>
+        <textarea id="messageInput" placeholder="Enter your message here..."></textarea>
+        
+        <div class="buttons">
+          <button type="button" class="check-btn" onclick="checkSpam(event)">
+            <span style="font-size: 1.2em;">🔍</span> Check for Spam
+          </button>
+          <button type="button" class="back-btn" onclick="goBack()" id="backBtn" style="display: none;">
+            <span style="font-size: 1.2em;">←</span> Back
+          </button>
+        </div>
+      </div>
+      
+      <div id="result" class="result"></div>
+      
+      <div id="analysisSection" class="analysis-section">
+        <div class="analysis-title">
+          <span>Spam Analysis Details</span>
+          <span id="spamScoreLabel">Score: <span id="spamScoreValue">0</span>/100</span>
+        </div>
+        
+        <div class="score-display">
+          <div class="score-circle" id="scoreCircle">0</div>
+          <div id="scoreText">No spam detected</div>
+        </div>
+        
+        <div class="analysis-details">
+          <div class="analysis-row">
+            <span>Total words in message:</span>
+            <span id="totalWords">0</span>
+          </div>
+          <div class="analysis-row">
+            <span>Spam words detected:</span>
+            <span id="spamWordsCount">0</span>
+          </div>
+          <div class="analysis-row">
+            <span>Pattern matches found:</span>
+            <span id="patternMatchesCount">0</span>
+          </div>
+          <div class="analysis-row">
+            <span>Spam risk level:</span>
+            <span id="riskLevel">Low</span>
+          </div>
+        </div>
+        
+        <div id="spamWordsList" style="margin-top: 15px; display: none;">
+          <h4>Detected spam words:</h4>
+          <div id="spamWordsContainer"></div>
+        </div>
+        
+        <div id="patternMatchesList" style="margin-top: 15px; display: none;">
+          <h4>Pattern matches detected:</h4>
+          <div id="patternMatchesContainer"></div>
+        </div>
+      </div>
+    
+      <div class="stats">
+        <div class="stat-box">
+          <span style="font-size: 2em; color: #00ffc8;">📧</span>
+          <div class="stat-number">12,847</div>
+          <div>Total Messages Checked</div>
+        </div>
+        <div class="stat-box">
+          <span style="font-size: 2em; color: #00ffc8;">🔍</span>
+          <div class="stat-number">3,291</div>
+          <div>Total Spam Detected</div>
+        </div>
+        <div class="stat-box">
+          <span style="font-size: 2em; color: #00ffc8;">👥</span>
+          <div class="stat-number">97%</div>
+          <div>User Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <footer>
+    <p>© 2025 Spam Shield | Protecting users from spam since 2025</p>
+  </footer>
+  
+  <script>
+//safe words
+
+// ~500+ safe/legit words (reduce spam score)
+const safeWords = [
+  "hello","regards","thank you","meeting","project","schedule","university","student","research","report","invoice","official",
+  "document","contract","team","discussion","agenda","feedback","analysis","development","secure","update","progress","legal",
+  "support","customer","service","training","engineering","assignment","submission","appointment","business","department",
+  "management","organization","application","conference","registration","accounting","finance","office","newsletter",
+  "confirmation","order","transaction","purchase","ticket","reservation","welcome","subscription",
+  // (you can expand this list with many more)
+];
+
+
+    // Enhanced spam words with weights
+    const spamWords = [
+      { word: "win", weight: 3 },
+      { word: "free", weight: 2 },
+      { word: "click here", weight: 3 },
+      { word: "prize", weight: 3 },
+      { word: "urgent", weight: 2 },
+      { word: "congratulations", weight: 3 },
+      { word: "claim", weight: 2 },
+      { word: "limited offer", weight: 3 },
+      { word: "buy now", weight: 2 },
+      { word: "act now", weight: 2 },
+      { word: "risk free", weight: 3 },
+      { word: "investment", weight: 2 },
+      { word: "money back", weight: 2 },
+      { word: "no cost", weight: 2 },
+      { word: "winner", weight: 3 },
+      { word: "selected", weight: 2 },
+      { word: "guarantee", weight: 1 },
+      { word: "dear friend", weight: 2 },
+      { word: "credit card", weight: 3 },
+      { word: "password", weight: 3 },
+      { word: "account update", weight: 3 },
+      { word: "verify your account", weight: 3 },
+      { word: "lottery", weight: 3 },
+      { word: "sweepstakes", weight: 3 },
+      { word: "million", weight: 2 },
+      { word: "dollar", weight: 2 },
+      { word: "inheritance", weight: 3 },
+      { word: "nigerian", weight: 4 },
+      { word: "prince", weight: 4 },
+      { word: "wire transfer", weight: 4 },
+      { word: "bank account", weight: 3 },
+      { word: "password reset", weight: 3 },
+      { word: "security alert", weight: 3 },
+      { word: "suspicious activity", weight: 3 },
+      { word: "verify identity", weight: 3 }
+    ];
+    const spamPatterns = [
+      { pattern: /\b(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*\b/gi, description: "URL detected", weight: 4 },
+      { pattern: /\b\d{10,}\b/g, description: "Long number sequence", weight: 3 },
+      { pattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/gi, description: "Email address", weight: 3 },
+      { pattern: /([!$%&])\1{2,}/g, description: "Repeated special characters", weight: 2 },
+      { pattern: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, description: "Phone number pattern", weight: 3 },
+      { pattern: /[A-Z]{5,}/g, description: "Excessive capitalization", weight: 2 },
+      { pattern: /\b([A-Za-z])\1{3,}\b/g, description: "Repeated letters", weight: 2 },
+      { pattern: /\$\d+(?:\.\d{2})?(?:\s*(?:million|billion|thousand))?/gi, description: "Monetary amounts", weight: 3 },
+      { pattern: /(?:100|%)\s*(?:free|guarantee|satisfaction)/gi, description: "100% claims", weight: 3 },
+      { pattern: /(?:dear\s+(?:friend|customer|valued\s+client)|hello\s+here)/gi, description: "Impersonal greeting", weight: 2 }
+    ];
+
+    // Initialize user stats
+    let userStats = { checks: 0, spamDetected: 0 };
+
+    // Load user stats from localStorage if available
+    function loadUserStats() {
+      try {
+        const savedStats = localStorage.getItem('spamShieldUserStats');
+        if (savedStats) {
+          userStats = JSON.parse(savedStats);
+        }
+      } catch (e) {
+        console.error("Error loading from localStorage:", e);
+      }
+      updateUserStatsDisplay();
+    }
+
+    // Save user stats to localStorage
+    function saveUserStats() {
+      try {
+        localStorage.setItem('spamShieldUserStats', JSON.stringify(userStats));
+      } catch (e) {
+        console.error("Error saving to localStorage:", e);
+      }
+      updateUserStatsDisplay();
+    }
+
+    // Update the display of user stats
+    function updateUserStatsDisplay() {
+      const checksEl = document.getElementById('userChecks');
+      const spamEl = document.getElementById('userSpamCount');
+      if (checksEl) checksEl.textContent = userStats.checks;
+      if (spamEl) spamEl.textContent = userStats.spamDetected;
+    }
+
+    // Reset user stats
+    function resetUserStats() {
+      if (confirm("Are you sure you want to reset your check count?")) {
+        userStats.checks = 0;
+        userStats.spamDetected = 0;
+        saveUserStats();
+      }
+    }
+
+    // Show the spam detection modal
+    function showSpamModal() {
+      const modal = document.getElementById('spamModal');
+      if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+      }
+    }
+
+    // Close the modal
+    function closeModal() {
+      const modal = document.getElementById('spamModal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+      }
+    }
+
+    // Go to complaint page
+    function goToComplaintPage() {
+      window.location.href = 'Complaint.html';
+    }
+
+    // Go back to check page
+    function goBackToCheck() {
+      closeModal();
+      const inputSection = document.querySelector('.input-section');
+      if (inputSection) {
+        inputSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Go back to main page
+    function goBack() {
+      window.location.href = 'main.html';
+    }
+
+    // Toggle dropdown menu
+    function toggleDropdown() {
+      const dropdown = document.getElementById('dropdownMenu');
+      if (dropdown) {
+        dropdown.classList.toggle('show');
+      }
+    }
+
+    // Close dropdown when clicking outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.menu-toggle')) {
+        const dropdown = document.getElementById('dropdownMenu');
+        if (dropdown && dropdown.classList.contains('show')) {
+          dropdown.classList.remove('show');
+        }
+      }
+    }
+
+    // Check for spam
+    function checkSpam(event) {
+      if (event) event.preventDefault();
+
+      const inputEl = document.getElementById('messageInput');
+      const resultDiv = document.getElementById('result');
+      if (!inputEl || !resultDiv) return;
+
+      const input = inputEl.value;
+      if (!input.trim()) {
+        alert("Please enter a message to check.");
+        return;
+      }
+
+      userStats.checks++;
+
+      // Lowercase input for word matching
+      const inputLower = input.toLowerCase();
+      let spamScore = 0;
+      let detectedSpamWords = [];
+      let detectedPatterns = [];
+
+      // Check for spam words
+      spamWords.forEach(item => {
+        if (inputLower.includes(item.word)) {
+          spamScore += item.weight;
+          detectedSpamWords.push(item.word);
+        }
+      });
+
+      // Check for spam patterns
+      let patternScore = 0;
+      spamPatterns.forEach(item => {
+        const matches = input.match(item.pattern);
+        if (matches && matches.length > 0) {
+          patternScore += item.weight * matches.length;
+          detectedPatterns.push({
+            description: item.description,
+            matches: matches
+          });
+        }
+      });
+
+      // Combine scores and calculate percentage
+      const totalScore = spamScore + patternScore;
+      const spamPercentage = Math.min(100, Math.round((totalScore / 30) * 100));
+
+      // Update analysis section
+      updateAnalysisSection(input, spamPercentage, detectedSpamWords, detectedPatterns);
+
+      // Display result and update stats
+      if (spamPercentage >= 30) {
+        userStats.spamDetected++;
+        showSpamModal();
+        resultDiv.innerHTML = "<span style='font-size: 1.2em;'>⚠️</span> This message is likely <span class='spam'>SPAM</span>.";
+        resultDiv.className = "result spam";
+      } else {
+        resultDiv.innerHTML = "<span style='font-size: 1.2em;'>✅</span> This message seems <span class='legit'>LEGIT</span>.";
+        resultDiv.className = "result legit";
+      }
+
+      saveUserStats();
+      resultDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Update analysis section with details
+    function updateAnalysisSection(input, spamPercentage, spamWords, patterns) {
+      const analysisSection = document.getElementById('analysisSection');
+      const totalWordsEl = document.getElementById('totalWords');
+      const spamWordsCountEl = document.getElementById('spamWordsCount');
+      const patternMatchesCountEl = document.getElementById('patternMatchesCount');
+      const riskLevelEl = document.getElementById('riskLevel');
+      const scoreCircleEl = document.getElementById('scoreCircle');
+      const scoreTextEl = document.getElementById('scoreText');
+      const spamScoreValueEl = document.getElementById('spamScoreValue');
+      
+      if (analysisSection) {
+        analysisSection.style.display = 'block';
+      }
+      
+      // Calculate total words
+      const totalWords = input.trim() ? input.split(/\s+/).length : 0;
+      
+      if (totalWordsEl) totalWordsEl.textContent = totalWords;
+      if (spamWordsCountEl) spamWordsCountEl.textContent = spamWords.length;
+      if (patternMatchesCountEl) patternMatchesCountEl.textContent = patterns.length;
+      if (spamScoreValueEl) spamScoreValueEl.textContent = spamPercentage;
+      
+      // Set risk level and score circle color
+      let riskLevel = "Low";
+      let scoreClass = "safe";
+      
+      if (spamPercentage >= 70) {
+        riskLevel = "High";
+        scoreClass = "danger";
+      } else if (spamPercentage >= 30) {
+        riskLevel = "Medium";
+        scoreClass = "warning";
+      }
+      
+      if (riskLevelEl) riskLevelEl.textContent = riskLevel;
+      if (scoreCircleEl) {
+        scoreCircleEl.textContent = spamPercentage;
+        scoreCircleEl.className = `score-circle ${scoreClass}`;
+      }
+      if (scoreTextEl) {
+        scoreTextEl.textContent = spamPercentage >= 30 ? 
+          "Potential spam detected" : "No significant spam indicators";
+      }
+      
+      // Show spam words if any
+      const spamWordsContainer = document.getElementById('spamWordsContainer');
+      const spamWordsList = document.getElementById('spamWordsList');
+      
+      if (spamWords.length > 0 && spamWordsContainer) {
+        spamWordsContainer.innerHTML = spamWords.map(word => 
+          `<span class="spam-word">${word}</span>`).join(', ');
+        spamWordsList.style.display = 'block';
+      } else if (spamWordsList) {
+        spamWordsList.style.display = 'none';
+      }
+      
+      // Show pattern matches if any
+      const patternMatchesContainer = document.getElementById('patternMatchesContainer');
+      const patternMatchesList = document.getElementById('patternMatchesList');
+      
+      if (patterns.length > 0 && patternMatchesContainer) {
+        patternMatchesContainer.innerHTML = patterns.map(pattern => 
+          `<div class="pattern-info"><span class="pattern-type">${pattern.description}</span>: ${pattern.matches.join(', ')}</div>`).join('');
+        patternMatchesList.style.display = 'block';
+      } else if (patternMatchesList) {
+        patternMatchesList.style.display = 'none';
+      }
+    }
+
+    // Initialize the page on load
+    window.onload = function () {
+      loadUserStats();
+    };
+  </script>
+</body>
+</html>

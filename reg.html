@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberShield - Secure Registration</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #e0e0e0;
+    }
+    
+    .cyber-container {
+      background: rgba(15, 25, 35, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      border: 1px solid rgba(100, 150, 200, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
+                  0 0 20px rgba(0, 180, 255, 0.2) inset;
+      padding: 30px;
+      width: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cyber-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.05)
+      );
+      transform: rotate(45deg);
+      z-index: -1;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .header h2 {
+      font-size: 28px;
+      margin-bottom: 5px;
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    }
+    
+    .header p {
+      font-size: 14px;
+      color: #a0a0b0;
+    }
+    
+    .security-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: #4facfe;
+      font-size: 20px;
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #a0a0b0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .input-group i {
+      margin-right: 10px;
+      color: #4facfe;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 12px 15px 12px 40px;
+      background: rgba(50, 60, 70, 0.6);
+      border: 1px solid rgba(100, 150, 200, 0.3);
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: #4facfe;
+      box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 40px;
+      color: #4facfe;
+    }
+    
+    .password-strength {
+      height: 5px;
+      background: #2a3b4c;
+      border-radius: 3px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    
+    .strength-meter {
+      height: 100%;
+      width: 0;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    
+    .password-rules {
+      font-size: 12px;
+      color: #a0a0b0;
+      margin-top: 5px;
+    }
+    
+    .terms {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    
+    .terms input {
+      margin-right: 10px;
+    }
+    
+    .terms a {
+      color: #4facfe;
+      text-decoration: none;
+    }
+    
+    .terms a:hover {
+      text-decoration: underline;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      border: none;
+      border-radius: 8px;
+      color: #0f2027;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    button:hover {
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
+      box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    
+    .login-link a {
+      color: #4facfe;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+    
+    .encryption-note {
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px;
+      background: rgba(0, 180, 255, 0.1);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    
+    .encryption-note i {
+      color: #4facfe;
+      margin-right: 5px;
+    }
+    
+    @media (max-width: 480px) {
+      .cyber-container {
+        width: 90%;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyber-container">
+    <div class="header">
+      <div class="security-badge">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <h2>CYBERSHIELD INTELLIGENCE</h2>
+      <p>Secure Registration Portal</p>
+    </div>
+    
+    <form method="post" action="reg.php">
+      <div class="input-group">
+        <label><i class="fas fa-user"></i> Full Name</label>
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="fname" name="fname" placeholder="Enter First Name" required>
+      </div>
+      
+      <div class="input-group">
+        <label><i class="fas fa-users"></i> Last Name</label>
+        <i class="fas fa-users input-icon"></i>
+        <input type="text" id="lname" name="lname" placeholder="Enter Last Name" required>
+      </div>
+      
+      <div class="input-group">
+        <label><i class="fas fa-envelope"></i> Email Address</label>
+        <i class="fas fa-envelope input-icon"></i>
+        <input type="email" id="email" name="email" placeholder="Enter Secure Email" required>
+      </div>
+      
+      <div class="input-group">
+        <label><i class="fas fa-user-secret"></i> Username</label>
+        <i class="fas fa-user-secret input-icon"></i>
+        <input type="text" id="username" name="username" placeholder="Choose Codename" required>
+      </div>
+      
+      <div class="input-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <i class="fas fa-lock input-icon"></i>
+        <input type="password" id="password" name="pwd" placeholder="Create Strong Password" required onkeyup="checkPasswordStrength(this.value)">
+        <div class="password-strength">
+          <div class="strength-meter" id="password-strength-meter"></div>
+        </div>
+        <div class="password-rules">
+          Must include uppercase, lowercase, number, and special character
+        </div>
+      </div>
+      
+      <div class="terms">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+      </div>
+      
+      <button type="submit"><i class="fas fa-user-plus"></i> CREATE SECURE ACCOUNT</button>
+    </form>
+    
+    <div class="login-link">
+      Already have an account? <a href="log.html">Access System</a>
+    </div>
+    
+    <div class="encryption-note">
+      <i class="fas fa-lock"></i> All data is encrypted with AES-256 encryption
+    </div>
+  </div>
+
+  <script>
+    function checkPasswordStrength(password) {
+      let strength = 0;
+      const meter = document.getElementById('password-strength-meter');
+      
+      if (password.length >= 8) strength += 20;
+      if (/[A-Z]/.test(password)) strength += 20;
+      if (/[a-z]/.test(password)) strength += 20;
+      if (/[0-9]/.test(password)) strength += 20;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+      
+      meter.style.width = strength + '%';
+      
+      if (strength < 40) {
+        meter.style.background = '#ff4d4d';
+      } else if (strength < 80) {
+        meter.style.background = '#ffa64d';
+      } else {
+        meter.style.background = '#2ecc71';
+      }
+    }
+  </script>
+</body>
+</html>

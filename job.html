@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Offer Letter Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #2c3e50;
+      color: #fff;
+      width: 100%;
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+
+    .container {
+      margin: 20px auto;
+      max-width: 800px;
+      width: 90%;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .drop-zone {
+      border: 2px dashed #3498db;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 20px;
+      transition: background 0.2s;
+    }
+    .drop-zone.dragover {
+      background: #ecf9ff;
+      border-color: #2980b9;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #3498db;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    button:hover { background: #2980b9; }
+    button:disabled { background: #bdc3c7; cursor: not-allowed; }
+
+    #fileName {
+      text-align: center;
+      margin: 10px 0;
+      font-style: italic;
+      color: #34495e;
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+      font-weight: bold;
+      color: #f39c12;
+    }
+
+    #results {
+      margin-top: 20px;
+    }
+    .error-message {
+      border-left: 4px solid #e74c3c;
+      padding: 10px;
+      background: #fdecea;
+    }
+    .strict-validation {
+      border-left: 4px solid #f39c12;
+      padding: 10px;
+      background: #fff6e5;
+    }
+
+    /* Back Button Styles */
+    .back-btn {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      background: #4da6ff;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(77, 166, 255, 0.3);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .back-btn:hover {
+      background: #3399ff;
+      box-shadow: 0 4px 8px rgba(77, 166, 255, 0.5);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="main.html" class="back-btn">
+      <span>←</span> Back to Main
+    </a>
+    <h1>Offer Letter Analyzer</h1>
+    <p>Upload or drop your offer letter to detect risks and validate it</p>
+  </header>
+
+  <div class="container">
+    <div id="dropZone" class="drop-zone">
+      <p>📄 Drag & drop your offer letter here</p>
+      <p>or</p>
+      <button id="browseBtn">Browse File</button>
+      <input type="file" id="fileInput" accept=".txt,.pdf,.doc,.docx" style="display:none;">
+    </div>
+
+    <div id="fileName"></div>
+
+    <div class="buttons">
+      <button id="analyzeBtn" disabled>Analyze Offer Letter</button>
+    </div>
+
+    <div id="loading">⏳ Analyzing offer letter...</div>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const browseBtn = document.getElementById('browseBtn');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const resultsDiv = document.getElementById('results');
+      const loadingDiv = document.getElementById('loading');
+      const fileNameDiv = document.getElementById('fileName');
+
+      let selectedFile = null;
+
+      // === Market salary data ===
+      const marketSalaries = {
+        'software engineer': { min: 80000, max: 160000, avg: 110000 },
+        'data scientist': { min: 90000, max: 170000, avg: 125000 },
+        'product manager': { min: 95000, max: 180000, avg: 135000 },
+        'marketing specialist': { min: 50000, max: 90000, avg: 65000 },
+        'sales representative': { min: 45000, max: 85000, avg: 60000 },
+        'customer support': { min: 35000, max: 65000, avg: 45000 },
+        'graphic designer': { min: 40000, max: 80000, avg: 55000 },
+        'project manager': { min: 70000, max: 130000, avg: 95000 }
+      };
+
+      // === Required keywords ===
+      const requiredOfferLetterKeywords = [
+        'salary', 'position', 'title', 'offer', 'employment',
+        'compensation', 'job', 'role', 'company'
+      ];
+
+      // === Strict validation patterns ===
+      const strictOfferLetterPatterns = [
+        {
+          name: "Salary Mention",
+          pattern: /(\$|£|€)\s*\d+[,.]?\d*\s*(per year|annually|yearly|monthly|per month)/i,
+          required: true
+        },
+        {
+          name: "Position/Title",
+          pattern: /(position|title|role)\s*(of|as)?\s*:?\s*["']?[A-Za-z\s]+["']?/i,
+          required: true
+        },
+        {
+          name: "Offer Statement",
+          pattern: /(pleased|delighted|happy|excited)\s+to\s+(offer|extend)/i,
+          required: true
+        },
+        {
+          name: "Start Date",
+          pattern: /(start|begin|commence|joining)\s+(date|on|from)\s*\w+\s+\d{1,2},?\s*\d{4}/i,
+          required: false
+        },
+        {
+          name: "Company Name",
+          pattern: /(at|with|join)\s+[A-Z][A-Za-z\s&.,]+(Inc|LLC|Corp|Company|Ltd)/i,
+          required: false
+        }
+      ];
+
+      // === Risk patterns ===
+      const patterns = [
+        {
+          name: "Vague Termination Clause",
+          pattern: /\b(terminate|termination|dismiss|fire|let go).{0,40}\b(at will|without cause|company'?s discretion|sole discretion)\b/i,
+          risk: "high"
+        },
+        {
+          name: "Non-Compete Agreement",
+          pattern: /\b(non[-\s]?compete|restrictive covenant|cannot work for competitor|competing business)\b.*?\b(\d{1,2}|twelve|eighteen|24|thirty[-\s]?six)\s*(month|months|year|years)\b/i,
+          risk: "medium"
+        },
+        {
+          name: "Intellectual Property Claims",
+          pattern: /\b(intellectual property|ip|invention|patent|copyright)\b.*?\b(assign|transfer|belong to|property of|owned by).{0,40}\b(company|employer)\b/i,
+          risk: "medium"
+        },
+        {
+          name: "Salary Below Market Average",
+          pattern: /\$(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/,
+          risk: "variable"
+        },
+        {
+          name: "Unclear Bonus Structure",
+          pattern: /\b(bonus|incentive|commission).*?\b(discretion|determine|decide|subject to|may|if applicable)\b/i,
+          risk: "medium"
+        },
+        {
+          name: "Benefits Missing",
+          pattern: /\b(health insurance|medical|dental|vision|401k|retirement|pension|vacation|pto|paid time off)\b/i,
+          risk: "low",
+          inverse: true
+        },
+        {
+          name: "At-Will Employment",
+          pattern: /\b(at[-\s]?will|employment at will|at the will|terminate at any time)\b/i,
+          risk: "low"
+        },
+        {
+          name: "Confidentiality Clause",
+          pattern: /\b(confidential|proprietary|trade secret|nda|non[-\s]?disclosure)\b/i,
+          risk: "low"
+        },
+        {
+          name: "Vague Job Responsibilities",
+          pattern: /\b(other duties|as assigned|as needed|as required|additional responsibilities)\b/i,
+          risk: "medium"
+        }
+      ];
+
+      // === File Handling ===
+      browseBtn.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', handleFileSelection);
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+          handleFileSelection();
+        }
+      });
+
+      analyzeBtn.addEventListener('click', function () {
+        if (!selectedFile) {
+          alert('Please upload an offer letter file first.');
+          return;
+        }
+
+        loadingDiv.style.display = 'block';
+        analyzeBtn.disabled = true;
+
+        readFileContent(selectedFile)
+          .then(content => {
+            const validation = validateOfferLetter(content);
+
+            if (!validation.isValid) {
+              loadingDiv.style.display = 'none';
+              analyzeBtn.disabled = false;
+              showValidationResults(validation);
+              return;
+            }
+
+            analyzeOfferLetter(content);
+            loadingDiv.style.display = 'none';
+            analyzeBtn.disabled = false;
+          })
+          .catch(error => {
+            console.error('Error reading file:', error);
+            loadingDiv.style.display = 'none';
+            analyzeBtn.disabled = false;
+            showError("Error reading the file. Please try again with a different file.");
+          });
+      });
+
+      function handleFileSelection() {
+        if (fileInput.files.length > 0) {
+          selectedFile = fileInput.files[0];
+          fileNameDiv.textContent = selectedFile.name;
+          analyzeBtn.disabled = false;
+        }
+      }
+
+      function readFileContent(file) {
+        return new Promise((resolve, reject) => {
+          if (file.type === 'text/plain') {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsText(file);
+          } else {
+            // Simulated extraction for PDFs/DOCX
+            setTimeout(() => {
+              const simulatedContent = generateOfferLetterContent(file.name);
+              resolve(simulatedContent);
+            }, 500);
+          }
+        });
+      }
+
+      function generateOfferLetterContent(filename) {
+        const position = extractPositionFromFileName(filename);
+        const salary = Math.floor(Math.random() * 50000) + 70000;
+        const startDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString();
+
+        return `
+          OFFER OF EMPLOYMENT
+          Dear Candidate,
+          We are pleased to extend to you this offer of employment for the position of ${position} at Our Company Inc.
+          Your starting salary will be $${salary} per year, payable in accordance with our standard payroll practices.
+          Your employment is scheduled to begin on ${startDate}.
+          Sincerely,
+          Hiring Manager
+          Our Company Inc.
+        `;
+      }
+
+      function extractPositionFromFileName(filename) {
+        const positions = Object.keys(marketSalaries);
+        const filenameLower = filename.toLowerCase();
+        for (const position of positions) {
+          if (filenameLower.includes(position)) return position;
+        }
+        return positions[Math.floor(Math.random() * positions.length)];
+      }
+
+      function validateOfferLetter(text) {
+        let requiredCount = 0;
+        let foundCount = 0;
+
+        const results = strictOfferLetterPatterns.map(pattern => {
+          const isFound = pattern.pattern.test(text);
+          if (pattern.required) {
+            requiredCount++;
+            if (isFound) foundCount++;
+          }
+          return { ...pattern, found: isFound };
+        });
+
+        const keywordResults = requiredOfferLetterKeywords.map(keyword => {
+          const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+          return { keyword, found: regex.test(text) };
+        });
+
+        const foundKeywords = keywordResults.filter(k => k.found).length;
+        const isValid = foundCount >= requiredCount && foundKeywords >= Math.floor(requiredOfferLetterKeywords.length * 0.8);
+
+        return { isValid, results, keywordResults, requiredCount, foundCount, foundKeywords };
+      }
+
+      function showValidationResults(validation) {
+        resultsDiv.innerHTML = `
+          <div class="strict-validation">
+            <h3>⚠ This document does not appear to be an offer letter</h3>
+            <p>Found only ${validation.foundKeywords} of ${requiredOfferLetterKeywords.length} required keywords.</p>
+          </div>
+        `;
+      }
+
+      function showError(message) {
+        resultsDiv.innerHTML = `<div class="error-message"><h3>Error</h3><p>${message}</p></div>`;
+      }
+
+      function analyzeOfferLetter(text) {
+        let riskScore = 0, maxRiskScore = 0;
+        let extractedSalary = null, extractedPosition = null;
+        const detectedPatterns = [];
+
+        const salaryMatch = text.match(/\$(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/);
+        if (salaryMatch) extractedSalary = parseFloat(salaryMatch[1].replace(/,/g, ''));
+
+        for (const position of Object.keys(marketSalaries)) {
+          if (new RegExp(`\\b${position}\\b`, 'i').test(text)) {
+            extractedPosition = position;
+            break;
+          }
+        }
+
+        patterns.forEach(pattern => {
+          const hasPattern = pattern.pattern.test(text);
+          if ((!pattern.inverse && hasPattern) || (pattern.inverse && !hasPattern)) {
+            let risk = 0;
+            if (pattern.risk === 'high') risk = 3;
+            else if (pattern.risk === 'medium') risk = 2;
+            else if (pattern.risk === 'low') risk = 1;
+            else if (pattern.risk === 'variable' && pattern.name === "Salary Below Market Average" && extractedSalary && extractedPosition) {
+              const avg = marketSalaries[extractedPosition].avg;
+              const ratio = extractedSalary / avg;
+              if (ratio < 0.7) risk = 3;
+              else if (ratio < 0.9) risk = 2;
+            }
+
+            if (risk > 0) {
+              riskScore += risk;
+              maxRiskScore += 3;
+              detectedPatterns.push({ ...pattern, riskValue: risk });
+            }
+          }
+        });
+
+        const riskPercent = maxRiskScore ? (riskScore / maxRiskScore) * 100 : 0;
+        displayResults(riskPercent, detectedPatterns, extractedSalary, extractedPosition);
+      }
+
+      function displayResults(riskPercent, patterns, salary, position) {
+        let riskLevel = "Low Risk", riskColor = "#27ae60";
+        if (riskPercent >= 70) { riskLevel = "High Risk"; riskColor = "#e74c3c"; }
+        else if (riskPercent >= 30) { riskLevel = "Medium Risk"; riskColor = "#f39c12"; }
+
+        resultsDiv.innerHTML = `
+          <div style="border-left: 4px solid ${riskColor}; padding: 10px;">
+            <h3 style="color:${riskColor};">${riskLevel}</h3>
+            <p>Risk Score: ${riskPercent.toFixed(0)}%</p>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

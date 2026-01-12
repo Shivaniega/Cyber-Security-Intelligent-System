@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Intelligence System Guidelines</title>
+    <style>
+        :root {
+            --primary-color: #0a192f;
+            --secondary-color: #112240;
+            --accent-color: #64ffda;
+            --text-color: #e6f1ff;
+            --text-muted: #8892b0;
+            --card-bg: #172a45;
+            --danger-color: #ff6b6b;
+            --warning-color: #ffd166;
+            --success-color: #06d6a0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            color: var(--accent-color);
+            font-size: 24px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            background: linear-gradient(45deg, var(--accent-color), #4fc3f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 8px 15px;
+            width: 300px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            width: 100%;
+            outline: none;
+            padding: 5px;
+        }
+        
+        .search-icon {
+            color: var(--text-muted);
+            margin-right: 5px;
+        }
+        
+        /* Back Button Styles */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: rgba(23, 42, 69, 0.6);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+        }
+        
+        .back-button:hover {
+            color: #4fc3f7;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .back-button:hover i {
+            transform: translateX(-3px);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(to bottom right, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.3);
+        }
+        
+        .guidelines-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .sidebar {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 20px;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--text-muted);
+        }
+        
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--card-bg);
+        }
+        
+        .nav-item.active {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .content {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        .section h3 {
+            font-size: 22px;
+            margin: 25px 0 15px;
+            color: var(--text-color);
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .phase-card {
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .checklist {
+            list-style-type: none;
+        }
+        
+        .checklist li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .checklist li:before {
+            content: "✓";
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-muted);
+            border-top: 1px solid var(--text-muted);
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .guidelines-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .header-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="header-left">
+                <a href="main.html" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <div class="logo">
+                    <span class="logo-icon">🔒</span>
+                    <h1>CyberIntel Guidelines</h1>
+                </div>
+            </div>
+            
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Search guidelines..." id="searchInput">
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h2>Cybersecurity Intelligence System Guidelines</h2>
+            <p>Comprehensive framework for designing, implementing, and operating a cybersecurity intelligence system. Follow these guidelines to establish a proactive, intelligence-led security posture.</p>
+            <button class="btn" id="downloadBtn">Download PDF Guidelines</button>
+        </div>
+
+        <div class="guidelines-container">
+            <div class="sidebar">
+                <h3>Guideline Sections</h3>
+                <div class="nav-item active" data-target="overview">Overview & Principles</div>
+                <div class="nav-item" data-target="intelligence-cycle">Intelligence Cycle</div>
+                <div class="nav-item" data-target="planning">Planning & Direction</div>
+                <div class="nav-item" data-target="collection">Collection</div>
+                <div class="nav-item" data-target="processing">Processing</div>
+                <div class="nav-item" data-target="analysis">Analysis & Production</div>
+                <div class="nav-item" data-target="dissemination">Dissemination</div>
+                <div class="nav-item" data-target="best-practices">Best Practices</div>
+                <div class="nav-item" data-target="tools">Tools & Technologies</div>
+            </div>
+
+            <div class="content">
+                <div class="section active" id="overview">
+                    <h2>Overview & Core Principles</h2>
+                    <div class="card">
+                        <p>The primary goal of a Cybersecurity Intelligence System is to move from a reactive security posture to a proactive, predictive one. The system should inform decision-making at tactical, operational, and strategic levels.</p>
+                    </div>
+                    
+                    <h3>Core Principles</h3>
+                    <div class="card">
+                        <ul class="checklist">
+                            <li>Intelligence-Led Security: Use threat intelligence to drive security decisions</li>
+                            <li>Risk-Based Approach: Prioritize based on potential impact to business</li>
+                            <li>Continuous Monitoring: Maintain 24/7 vigilance across all assets</li>
+                            <li>Defense in Depth: Layer security controls for comprehensive protection</li>
+                            <li>Adaptive Security: Evolve defenses based on changing threat landscape</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="intelligence-cycle">
+                    <h2>The Intelligence Cycle</h2>
+                    <div class="card phase-card">
+                        <p>A mature Cyber Threat Intelligence (CTI) program follows a continuous cycle:</p>
+                    </div>
+                    
+                    <h3>Phase 1: Planning & Direction</h3>
+                    <div class="card">
+                        <p>Define intelligence requirements based on organizational needs and threat landscape.</p>
+                    </div>
+                    
+                    <h3>Phase 2: Collection</h3>
+                    <div class="card">
+                        <p>Gather relevant data from internal and external sources based on planning phase requirements.</p>
+                    </div>
+                    
+                    <h3>Phase 3: Processing</h3>
+                    <div class="card">
+                        <p>Transform collected data into a usable format through normalization, enrichment, and filtering.</p>
+                    </div>
+                    
+                    <h3>Phase 4: Analysis & Production</h3>
+                    <div class="card">
+                        <p>Analyze processed information to produce actionable intelligence for stakeholders.</p>
+                    </div>
+                    
+                    <h3>Phase 5: Dissemination</h3>
+                    <div class="card">
+                        <p>Deliver intelligence to appropriate consumers in timely and usable formats.</p>
+                    </div>
+                </div>
+
+                <div class="section" id="planning">
+                    <h2>Planning & Direction</h2>
+                    <div class="card">
+                        <h3>Define Requirements</h3>
+                        <p>Start with the "why." What questions are you trying to answer?</p>
+                        <ul class="checklist">
+                            <li>Tactical: "What IOCs are associated with threat actor X?"</li>
+                            <li>Operational: "What are the TTPs of ransomware group Y targeting our sector?"</li>
+                            <li>Strategic: "What are the emerging geopolitical risks to our industry?"</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Identify Stakeholders</h3>
+                        <p>Determine who consumes the intelligence:</p>
+                        <ul class="checklist">
+                            <li>SOC analysts: Need real-time tactical intelligence</li>
+                            <li>Incident responders: Require detailed technical context</li>
+                            <li>CISO/Management: Need strategic overviews and risk assessments</li>
+                            <li>Board of Directors: Require high-level business impact analysis</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Set Priorities</h3>
+                        <p>Align intelligence requirements with business risks and available resources:</p>
+                        <ul class="checklist">
+                            <li>Conduct risk assessment to identify critical assets</li>
+                            <li>Evaluate existing capabilities and gaps</li>
+                            <li>Develop a phased implementation plan</li>
+                            <li>Establish metrics for measuring effectiveness</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="collection">
+                    <h2>Collection Guidelines</h2>
+                    <div class="card">
+                        <h3>Diversify Sources</h3>
+                        <p>Do not rely on a single feed. Use a blend of internal and external sources:</p>
+                        
+                        <h4>Internal Sources</h4>
+                        <ul class="checklist">
+                            <li>Logs from EDR, Firewalls, DNS, Proxies</li>
+                            <li>Past incident reports and analysis</li>
+                            <li>Internal malware analysis results</li>
+                            <li>Network flow data and netflow analysis</li>
+                        </ul>
+                        
+                        <h4>External Sources</h4>
+                        <ul class="checklist">
+                            <li>Open Source (OSINT): Public threat reports, vendor blogs</li>
+                            <li>Commercial Feeds: Paid subscriptions for curated IOCs</li>
+                            <li>Information Sharing & Analysis Centers (ISACs/ISAOs)</li>
+                            <li>Dark Web Monitoring: For stolen credentials and planned attacks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Establish Collection Standards</h3>
+                        <p>Define what data to collect, how frequently, and in what format:</p>
+                        <ul class="checklist">
+                            <li>Specify collection intervals for each data source</li>
+                            <li>Standardize on formats like STIX/TAXII for threat intelligence</li>
+                            <li>Define data retention policies based on regulatory requirements</li>
+                            <li>Establish data classification and handling procedures</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="processing">
+                    <h2>Processing Guidelines</h2>
+                    <div class="card">
+                        <h3>Normalize Data</h3>
+                        <p>Convert collected data from various formats into a standardized, usable format:</p>
+                        <ul class="checklist">
+                            <li>Use common formats like JSON, CSV, STIX 2.x</li>
+                            <li>Establish consistent naming conventions</li>
+                            <li>Map different data schemas to a common model</li>
+                            <li>Handle timezone conversion to UTC consistently</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Deduplicate & Filter</h3>
+                        <p>Remove noise and irrelevant data to improve signal-to-noise ratio:</p>
+                        <ul class="checklist">
+                            <li>Remove duplicate IOCs and events</li>
+                            <li>Filter out irrelevant data based on your environment</li>
+                            <li>Apply whitelists for known good entities</li>
+                            <li>Implement confidence scoring for incoming intelligence</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Enrich Data</h3>
+                        <p>Add context to raw indicators to make them more actionable:</p>
+                        <ul class="checklist">
+                            <li>Add geolocation data to IP addresses</li>
+                            <li>Include WHOIS data for domain information</li>
+                            <li>Add reputation scores from multiple sources</li>
+                            <li>Correlate with vulnerability databases</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Store Efficiently</h3>
+                        <p>Use appropriate technologies for storing processed intelligence:</p>
+                        <ul class="checklist">
+                            <li>Use a Threat Intelligence Platform (TIP) for structured storage</li>
+                            <li>Implement appropriate database technologies (SQL, NoSQL)</li>
+                            <li>Establish data archiving procedures</li>
+                            <li>Ensure encryption of data at rest and in transit</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="analysis">
+                    <h2>Analysis & Production</h2>
+                    <div class="card">
+                        <h3>Analytical Techniques</h3>
+                        <p>Apply various analytical approaches to produce actionable intelligence:</p>
+                        <ul class="checklist">
+                            <li>Indicator Analysis: Evaluate IOCs for relevance and credibility</li>
+                            <li>Campaign Analysis: Identify related activity across time</li>
+                            <li>Trend Analysis: Spot patterns and emerging threats</li>
+                            <li>Threat Actor Analysis: Understand motivations and capabilities</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Production Formats</h3>
+                        <p>Create intelligence products tailored to different audiences:</p>
+                        <ul class="checklist">
+                            <li>Technical Reports: Detailed analysis for security practitioners</li>
+                            <li>Executive Summaries: High-level overviews for management</li>
+                            <li>Threat Briefs: Concise updates on specific threats</li>
+                            <li>Indicators of Compromise (IOCs): Machine-readable threat data</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="dissemination">
+                    <h2>Dissemination Guidelines</h2>
+                    <div class="card">
+                        <h3>Tailor Delivery</h3>
+                        <p>Customize intelligence delivery based on consumer needs:</p>
+                        <ul class="checklist">
+                            <li>Real-time alerts for critical threats</li>
+                            <li>Daily digest reports for ongoing awareness</li>
+                            <li>Weekly briefings for trend analysis</li>
+                            <li>Monthly executive summaries for strategic decision-making</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Delivery Channels</h3>
+                        <p>Use appropriate channels for different types of intelligence:</p>
+                        <ul class="checklist">
+                            <li>SIEM integration for automated alerting</li>
+                            <li>Email alerts for time-sensitive information</li>
+                            <li>Secure portals for detailed intelligence products</li>
+                            <li>Briefings and presentations for complex analysis</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="best-practices">
+                    <h2>Best Practices</h2>
+                    <div class="card">
+                        <h3>Program Management</h3>
+                        <ul class="checklist">
+                            <li>Establish clear governance and oversight</li>
+                            <li>Define roles and responsibilities</li>
+                            <li>Develop and maintain standard operating procedures</li>
+                            <li>Regularly review and update intelligence requirements</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Quality Assurance</h3>
+                        <ul class="checklist">
+                            <li>Validate sources for reliability and accuracy</li>
+                            <li>Implement peer review for analytical products</li>
+                            <li>Measure and report on intelligence effectiveness</li>
+                            <li>Continuously refine processes based on feedback</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Legal and Ethical Considerations</h3>
+                        <ul class="checklist">
+                            <li>Ensure compliance with privacy regulations</li>
+                            <li>Establish rules for appropriate use of intelligence</li>
+                            <li>Respect terms of service for data sources</li>
+                            <li>Maintain transparency about collection practices</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section" id="tools">
+                    <h2>Tools & Technologies</h2>
+                    <div class="card">
+                        <h3>Collection Tools</h3>
+                        <ul class="checklist">
+                            <li>SIEM systems for log aggregation</li>
+                            <li>Threat intelligence platforms (TIPs)</li>
+                            <li>OSINT collection frameworks</li>
+                            <li>API integrations with commercial feeds</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Analysis Tools</h3>
+                        <ul class="checklist">
+                            <li>Malware analysis sandboxes</li>
+                            <li>Network analysis tools</li>
+                            <li>Data visualization platforms</li>
+                            <li>Collaborative analysis environments</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Dissemination Tools</h3>
+                        <ul class="checklist">
+                            <li>Secure communication platforms</li>
+                            <li>Reporting and dashboard systems</li>
+                            <li>Integration with security orchestration</li>
+                            <li>Case management systems</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Cybersecurity Intelligence System Guidelines v2.1 | © 2023 Cyber Defense Initiative</p>
+            <p>For official use only. These guidelines are updated quarterly to reflect the evolving threat landscape.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === target) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                sections.forEach(section => {
+                    const sectionText = section.textContent.toLowerCase();
+                    if (sectionText.includes(searchTerm)) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Download button functionality
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.addEventListener('click', function() {
+                alert('Downloading cybersecurity intelligence guidelines PDF...');
+                // In a real implementation, this would trigger a file download
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

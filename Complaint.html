@@ -1,0 +1,256 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Complaint Form</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0c0c14 0%, #1a1a2e 100%);
+      color: #e6e6e6;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .form-container {
+      background: rgba(30, 30, 46, 0.7);
+      padding: 40px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 30px rgba(0, 255, 200, 0.1);
+      border: 1px solid rgba(0, 255, 200, 0.2);
+      backdrop-filter: blur(12px);
+      position: relative;
+    }
+
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      height: 5px; width: 100%;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .form-container:hover::before {
+      transform: scaleX(1);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientText 3s linear infinite;
+    }
+
+    @keyframes gradientText {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #b8b8cc;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #e6e6e6;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #00ffc8;
+      box-shadow: 0 0 8px rgba(0, 255, 200, 0.4);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, #00ffc8, #00b3ff);
+      color: #0c0c14;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #00ffc8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .back-button:hover { color: #00b3ff; }
+
+    .hidden {
+      display: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+      transition: all 0.3s ease;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: #1a1a2e;
+      color: #e6e6e6;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.5);
+      z-index: 999;
+      transition: transform 0.3s ease;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .popup.show { transform: translate(-50%, -50%) scale(1); }
+    .popup h3 { font-size: 1.5rem; margin-bottom: 15px; color: #00ffc8; }
+    .popup p { margin-bottom: 20px; }
+    .popup button {
+      background: #00ffc8;
+      color: #0c0c14;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .popup button:hover { background: #00b3ff; }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <a href="main.html" class="back-button">← Back to Home</a>
+    <h2>Submit a Complaint</h2>
+
+    <form action="send_complaint.php" method="POST" enctype="multipart/form-data">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="uname" placeholder="Enter your username" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+      <label for="category">Category</label>
+      <select id="category" name="category" required onchange="toggleFields()">
+        <option value="">Select a category</option>
+        <option value="service">Service</option>
+        <option value="billing">Billing</option>
+        <option value="technical">Technical</option>
+        <option value="spam">Spam Detection</option>
+        <option value="job">Job Portal</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="description">Complaint Description</label>
+      <textarea id="description" name="complaint" placeholder="Describe your issue in detail..." required></textarea>
+
+      <!-- Additional Comments -->
+      <div id="additionalBox" class="hidden">
+        <label for="details">Additional Comments</label>
+        <textarea id="details" name="details" placeholder="Provide additional comments about spam detection..."></textarea>
+      </div>
+
+      <!-- Upload Document -->
+      <div id="uploadBox" class="hidden">
+        <label for="document">Upload Supporting Document</label>
+        <input type="file" id="document" name="document" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+      </div>
+
+      <button type="submit">Submit Complaint</button>
+    </form>
+  </div>
+
+  <!-- Popup -->
+  <div class="popup" id="popupBox">
+    <h3>Complaint Submitted</h3>
+    <p>Thank you for submitting your complaint. We have received it and will look into the matter.</p>
+    <button onclick="closePopup()">Back</button>
+  </div>
+
+  <script>
+    // Show popup if success
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('success') === '1') {
+        document.getElementById('popupBox').classList.add('show');
+      }
+    };
+
+    function closePopup() {
+      window.location.href = window.location.pathname;
+    }
+
+    // Correct toggle logic
+    function toggleFields() {
+      const category = document.getElementById('category').value;
+      const additionalBox = document.getElementById('additionalBox');
+      const uploadBox = document.getElementById('uploadBox');
+
+      // Always hide both first
+      additionalBox.classList.add('hidden');
+      additionalBox.classList.remove('visible');
+      uploadBox.classList.add('hidden');
+      uploadBox.classList.remove('visible');
+
+      // Show only the relevant one
+      if (category === 'spam') {
+        additionalBox.classList.remove('hidden');
+        additionalBox.classList.add('visible');
+      } else if (category === 'job') {
+        uploadBox.classList.remove('hidden');
+        uploadBox.classList.add('visible');
+      }
+    }
+  </script>
+
+</body>
+</html>
